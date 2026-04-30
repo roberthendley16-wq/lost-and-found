@@ -1,24 +1,27 @@
-import logo from './logo.svg';
-import './App.css';
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
+import CreateLostItem from './pages/CreateLostItem';
+import CreateFoundItem from './pages/CreateFoundItem';
+import ViewMatches from './pages/ViewMatches';
+import VerifyMatch from './pages/VerifyMatch';
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Router>
+      <nav style={{ padding: '1rem', background: '#f0f0f0', marginBottom: '2rem' }}>
+        <Link to="/" style={{ marginRight: '1rem' }}>Report Lost Item</Link>
+        <Link to="/found" style={{ marginRight: '1rem' }}>Report Found Item</Link>
+        <Link to="/matches" style={{ marginRight: '1rem' }}>View Matches</Link>
+      </nav>
+      <div style={{ padding: '0 2rem' }}>
+        <Routes>
+          <Route path="/" element={<CreateLostItem />} />
+          <Route path="/found" element={<CreateFoundItem />} />
+          <Route path="/matches" element={<ViewMatches />} />
+          <Route path="/verify/:lostItemId" element={<VerifyMatch />} />
+        </Routes>
+      </div>
+    </Router>
   );
 }
 

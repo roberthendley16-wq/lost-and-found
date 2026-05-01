@@ -48,7 +48,7 @@ function CreateLostItem() {
 
   return (
     <div className="card">
-      <h2>Report a Lost Item</h2>
+      <h2>Report a Lost Item:</h2>
       <input name="user_id" placeholder="Your user ID" onChange={handleChange} />
       <select name="name" onChange={handleChange} defaultValue="">
         <option value="" disabled>Select item type</option>

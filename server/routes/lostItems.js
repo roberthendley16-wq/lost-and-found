@@ -2,6 +2,18 @@ const express = require('express');
 const router = express.Router();
 const supabase = require('../db');
 
+router.get('/options', async(req, res) => {
+  try {
+    const { data: names } = await supabase.from('Items_Names').select('Item_Names_id, name');
+    const { data: colors } = await supabase.from('Colors').select('Colors_id, color');
+    const { data: locations } = await supabase.from('Locations').select('Locations_id, locations')
+    res.json({names, colors, locations });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
 async function getOrCreate(table, matchColumn, matchValue, idColumn) {
   let { data } = await supabase
     .from(table)

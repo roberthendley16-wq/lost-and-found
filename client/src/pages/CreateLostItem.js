@@ -18,7 +18,7 @@ function CreateLostItem() {
 
   const handleSubmit = async () => {
     try {
-      const res = await axios.post('http://localhost:3001/lost-items', form);
+      const res = await axios.post('https://lost-and-found-uffo.onrender.com/lost-items', form);
       setSubmitted(res.data);
       setError(null);
     } catch (err) {

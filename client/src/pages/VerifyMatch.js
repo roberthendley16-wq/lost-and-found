@@ -12,7 +12,7 @@ function VerifyMatch() {
 
   const handleVerify = async () => {
     try {
-      const res = await axios.post('http://localhost:3001/matches/verify', {
+      const res = await axios.post('https://lost-and-found-uffo.onrender.com/matches/verify', {
         lost_item_id: lostItemId,
         found_item_id,
         guess

@@ -11,7 +11,7 @@ function ViewMatches() {
 
   const handleSearch = async () => {
     try {
-      const res = await axios.get(`http://localhost:3001/matches/${lostItemId}`);
+      const res = await axios.get(`https://lost-and-found-uffo.onrender.com/matches/${lostItemId}`);
       setMatches(res.data);
       setSearched(true);
       setError(null);

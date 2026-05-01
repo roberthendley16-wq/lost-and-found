@@ -17,7 +17,7 @@ function CreateFoundItem() {
 
   const handleSubmit = async () => {
     try {
-      const res = await axios.post('http://localhost:3001/found-items', form);
+      const res = await axios.post('https://lost-and-found-uffo.onrender.com/found-items', form);
       setSubmitted(res.data);
       setError(null);
     } catch (err) {

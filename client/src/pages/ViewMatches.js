@@ -22,7 +22,7 @@ function ViewMatches() {
 
   return (
     <div>
-      <h2>Find Matches</h2>
+      <h2>Find Matches:</h2>
       <input
         placeholder="Enter your lost item ID"
         value={lostItemId}

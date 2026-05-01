@@ -1,11 +1,30 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import CreateLostItem from './pages/CreateLostItem';
 import CreateFoundItem from './pages/CreateFoundItem';
 import ViewMatches from './pages/ViewMatches';
 import VerifyMatch from './pages/VerifyMatch';
+import Login from './pages/Login';
+import { supabase } from './supabaseClient';
 
 function App() {
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data }) => {
+      setUser(data.session?.user ?? null);
+      setLoading(false);
+    });
+
+    supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user ?? null);
+    });
+  }, []);
+
+  if (loading) return <p>Loading...</p>;
+  if (!user) return <Login />;
+  
   return (
     <Router>
       <nav style={{ padding: '1rem', background: '#f0f0f0', marginBottom: '2rem' }}>

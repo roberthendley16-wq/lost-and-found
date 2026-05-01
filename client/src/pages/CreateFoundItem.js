@@ -3,20 +3,19 @@ import axios from 'axios';
 
 const API = 'https://lost-and-found-uffo.onrender.com';
 
-function CreateLostItem() {
+function CreateFoundItem() {
   const [options, setOptions] = useState({ names: [], colors: [], locations: [] });
   const [form, setForm] = useState({
     user_id: '',
     name: '',
     color: '',
-    location: '',
-    secret_detail: ''
+    location: ''
   });
   const [submitted, setSubmitted] = useState(null);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    axios.get(`${API}/lost-items/options`)
+    axios.get(`${API}/found-items/options`)
       .then(res => setOptions(res.data))
       .catch(() => setError('Could not load options'));
   }, []);
@@ -27,7 +26,7 @@ function CreateLostItem() {
 
   const handleSubmit = async () => {
     try {
-      const res = await axios.post(`${API}/lost-items`, form);
+      const res = await axios.post(`${API}/found-items`, form);
       setSubmitted(res.data);
       setError(null);
     } catch (err) {
@@ -38,9 +37,8 @@ function CreateLostItem() {
   if (submitted) {
     return (
       <div className="card">
-        <h2>Lost item reported!</h2>
-        <p>Your item ID is: <strong>{submitted.lost_item_id}</strong></p>
-        <p>Save this ID — you will need it to check for matches.</p>
+        <h2>Found item reported!</h2>
+        <p>Thank you for reporting this item.</p>
         <button onClick={() => setSubmitted(null)}>Report another</button>
       </div>
     );
@@ -48,7 +46,7 @@ function CreateLostItem() {
 
   return (
     <div className="card">
-      <h2>Report a Lost Item</h2>
+      <h2>Report a Found Item</h2>
       <input name="user_id" placeholder="Your user ID" onChange={handleChange} />
       <select name="name" onChange={handleChange} defaultValue="">
         <option value="" disabled>Select item type</option>
@@ -68,11 +66,10 @@ function CreateLostItem() {
           <option key={l.Locations_id} value={l.location}>{l.location}</option>
         ))}
       </select>
-      <input name="secret_detail" placeholder="Secret detail only you would know" onChange={handleChange} />
       {error && <p className="error">{error}</p>}
       <button onClick={handleSubmit}>Submit</button>
     </div>
   );
 }
 
-export default CreateLostItem;
+export default CreateFoundItem;

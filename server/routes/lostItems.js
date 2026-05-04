@@ -2,15 +2,31 @@ const express = require('express');
 const router = express.Router();
 const supabase = require('../db');
 
-router.get('/options', async(req, res) => {
+router.get('/options', async (req, res) => {
   try {
-    const { data: names } = await supabase.from('Item_Names').select('Item_Names_id, name');
-    const { data: colors } = await supabase.from('Colors').select('Colors_id, color');
-    const { data: locations } = await supabase.from('Locations').select('Locations_id, location');
-    res.json({names, colors, locations });
+    const { data: names, error: namesError } = await supabase
+      .from('Item_Names')
+      .select('Item_Names_id, name')
+      .order('name');
+
+    const { data: colors, error: colorsError } = await supabase
+      .from('Colors')
+      .select('Colors_id, color')
+      .order('color');
+
+    const { data: locations, error: locationsError } = await supabase
+      .from('Locations')
+      .select('Locations_id, location')
+      .order('location');
+
+    if (namesError) throw namesError;
+    if (colorsError) throw colorsError;
+    if (locationsError) throw locationsError;
+
+    res.json({ names, colors, locations });
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: 'Server error' });
+    console.error('Options route error:', err);
+    res.status(500).json({ error: 'Server error loading dropdown options' });
   }
 });
 

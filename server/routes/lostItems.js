@@ -26,7 +26,7 @@ router.get('/options', async (req, res) => {
     res.json({ names, colors, locations });
   } catch (err) {
     console.error('Options route error:', err);
-    res.status(500).json({ error: 'Server error loading dropdown options' });
+    res.status(500).json({ error: err.message });
   }
 });
 

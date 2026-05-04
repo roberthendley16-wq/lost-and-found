@@ -6,7 +6,7 @@ router.get('/options', async(req, res) => {
   try {
     const { data: names } = await supabase.from('Items_Names').select('Item_Names_id, name');
     const { data: colors } = await supabase.from('Colors').select('Colors_id, color');
-    const { data: locations } = await supabase.from('Locations').select('Locations_id, locations')
+    const { data: locations } = await supabase.from('Locations').select('Locations_id, location')
     res.json({names, colors, locations });
   } catch (err) {
     console.error(err);

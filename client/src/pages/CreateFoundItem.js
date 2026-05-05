@@ -41,7 +41,7 @@ function CreateFoundItem() {
 
   return (
     <div className="page">
-      <h2 className="page-title">Report a Found Item</h2>
+      <h2 className="page-title">Report a Found Item:</h2>
       <div className="card">
         <div className="form-grid">
           <div className="form-group">

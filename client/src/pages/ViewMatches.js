@@ -22,10 +22,10 @@ function ViewMatches() {
 
   return (
     <div className="page">
-      <h2 className="page-title">View Matches</h2>
+      <h2 className="page-title">View Matches:</h2>
       <div className="card" style={{ marginBottom: '1.5rem' }}>
         <div className="form-group">
-          <label className="form-label">Enter your lost item ID</label>
+          <label className="form-label">Enter your lost item ID:</label>
           <input
             placeholder="e.g. 123e4567-e89b..."
             value={lostItemId}

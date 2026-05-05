@@ -119,7 +119,7 @@ function ViewPosts() {
 
   return (
     <div className="page">
-      <h2 className="page-title">Campus Lost & Found Posts</h2>
+      <h2 className="page-title">Posts Made Around FSU Campus:</h2>
 
       {error && <p className="error">{error}</p>}
 

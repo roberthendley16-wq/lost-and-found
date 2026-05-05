@@ -6,25 +6,53 @@ function Login() {
   const [password, setPassword] = useState('');
   const [isSignUp, setIsSignUp] = useState(false);
   const [error, setError] = useState(null);
+  const [message, setMessage] = useState(null);
 
   const handleSubmit = async () => {
-    const { error } = isSignUp
-      ? await supabase.auth.signUp({email, password })
-      : await supabase.auth.signInWithPassword({email, password });
-    if (error) setError(error.message);
+    setError(null);
+    setMessage(null);
+    if (isSignUp) {
+      const { error } = await supabase.auth.signUp({ email, password });
+      if (error) setError(error.message);
+      else setMessage('Check your email to confirm your account!')
+    } else {
+      const { error } = await supabase.auth.signInWithPassword({ email, password });
+      if (error) setError(error.message);
+    }
   };
-
   return (
-    <div className="card">
-      <h2>{isSignUp ? 'Create Account': 'Log In'}</h2>
-      <input placeholder="Email" value={email} onChange={e => setEmail(e.target.value)} />
-      <input placeholder="Password" type="password" value={password} onChange={e => setPassword(e.target.value)} />
-      {error && <p className="error">{error}</p>}
-      <button onClick={handleSubmit}>{isSignUp ? 'Sign Up' : 'Log In'}</button>
-      <p onClick={() => setIsSignUp(!isSignUp)} style={{ cursor: 'pointer', color: 'blue' }}>
-        {isSignUp ? 'Already have an account? Log in' : "Don't have an account? Sign up"}
-      </p>
+    <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: '#111'}}>
+      <div style={{ width: '100%', maxWidth: '380px', padding: '0 1rem' }}>
+        <h1 style={{ fontFamily: "'Bebas Neue', sans-serif",  fontSize: '32px', letterSpacing: '3px', color: '#c8102e', lineHeight: 1 }}>
+          Frostburg State Lost & Found Web Application
+        </h1>
+        <p style={{ fontSize: '13px', color: '#666', marginTop: '6px' }}>Web Application</p>
+        </div>
+        <div className="card">
+          <div className="form-group" style={{ marginBottom: '1rem' }}>
+            <label className="form-label">Email address</label>
+            <input type="email" placeholder="you@frostburg.edu" value={email} onChange={e => setEmail(e.target.value)} />
+          </div>
+          <div className="form-group" style={{ marginBottom: '1rem' }}>
+            <label className="form-label">Password</label>
+            <input type="password" placeholder="••••••••" value={password} onChange={e => setPassword(e.target.value)} />
+          </div>
+          {error && <p className="error">{error}</p>}
+          {message && <p className="success">{message}</p>}
+          <button className="primary" style={{ width: '100%' }} onClick={handleSubmit}>
+            {isSignUp ? 'Create Account' : 'Log In'}
+          </button>
+        </div>
+        <p onClick{() => { setIsSignUp(!isSignUp); setError(null); setMessage(null); }}
+          style={{ textAlign: 'center', fontsize: '13px', color: '#c8102e', cursor: 'pointer', marginTop: '1rem' }}>
+          {isSignUp ? 'Already have an account' : "Don't have an account? Sign Up"}
+        </p>
+      </div>
     </div>
+  );
+}
+export default Login;
+
   );
 }
 

@@ -47,5 +47,4 @@ function App() {
     </Router>
   );
 }
-export default Login;
-  rt default App;
+export default App;

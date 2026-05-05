@@ -39,10 +39,33 @@ function VerifyMatch() {
         setError('Lost item not found.');
         return;
       }
+      const normalizeText = (text) => {
+        return text
+          .toLowerCase()
+          .replace(/[^\w\s]/g, '')
+          .split(/\s+/)
+          .filter(word => word.length > 2)
+          .join(' ')
+          .trim();
+      };
+      const getSimilarityScore = (text1, text2) => {
+        const words1 = normalizeText(text1).split(' ').filter(Boolean);
+        const words2 = normalizeText(text2).split(' ').filter(Boolean);
 
-      const correctAnswer = lostItem.secret_detail.trim().toLowerCase();
-      const userAnswer = guess.trim().toLowerCase();
-      const isCorrect = userAnswer === correctAnswer;
+        if (words1.length === 0 || words2.length === 0){
+          return 0;
+        }
+        const matchingWords = words1.filter(word => words2.includes(word));
+        const score = matchingWords.length / Math.max(words1.length, words2.length);
+        return score;
+      };
+
+      const correctAnswer = normalizeText(lostItem.secret_detail);
+      const userAnswer = normalizeText(guess);
+
+      const exactMatch = correctAnswer === userAnswer;
+      const similarityScore = getSimilarityScore(lostItem.secret_detail, guess);
+      const isCorrect = exactMatch || similarityScore >= 0.6;
 
       // Create a match record
       const { data: match, error: matchError } = await supabase
@@ -70,7 +93,8 @@ function VerifyMatch() {
           {
             match_id: match.match_id,
             provided_answer: guess,
-            is_correct: isCorrect
+            is_correct: isCorrect,
+            similarity_score: similarityScore
           }
         ]);
 

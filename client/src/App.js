@@ -4,6 +4,7 @@ import CreateLostItem from './pages/CreateLostItem';
 import CreateFoundItem from './pages/CreateFoundItem';
 import ViewMatches from './pages/ViewMatches';
 import VerifyMatch from './pages/VerifyMatch';
+import ViewPosts from './pages/ViewPosts';
 import Login from './pages/Login';
 import { supabase } from './supabaseClient';
 
@@ -31,6 +32,7 @@ function App() {
         <div className="nav-links">
           <Link to="/">Report Lost Item Around Campus</Link>
           <Link to="/found">Report Found Item Around Campus</Link>
+          <Link to="/posts">View All Posts Made Around Campus</Link>
           <Link to="/matches">View Item Matches Around Campus</Link>
         </div>
         <button className="nav-logout" onClick={() => supabase.auth.signOut()}>Log Out</button>
@@ -39,6 +41,7 @@ function App() {
         <Routes>
           <Route path="/" element={<CreateLostItem />} />
           <Route path="/found" element={<CreateFoundItem />} />
+          <Route path="/posts" element={<ViewPosts />} />
           <Route path="/matches" element={<ViewMatches />} />
           <Route path="/verify/:lostItemId" element={<VerifyMatch />} />
         </Routes>

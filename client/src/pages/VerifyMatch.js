@@ -19,32 +19,40 @@ function VerifyMatch() {
       });
       setResult(res.data);
       setError(null);
-    } catch (err) {
+    } catch {
       setError('Something went wrong. Please try again.');
     }
   };
 
   if (result) {
     return (
-      <div>
-        <h2>{result.success ? 'Verified!' : 'Verification Failed'}</h2>
-        <p>{result.message}</p>
+      <div className="page">
+        <div className="card">
+          <h2 className="page-title">{result.success ? 'Verified!' : 'Verification Failed'}</h2>
+          <p style={{ color: '#ccc' }}>{result.message}</p>
+        </div>
       </div>
     );
   }
 
   return (
-    <div>
-      <h2>Verify Ownership</h2>
-      <p>Enter the secret detail you provided when you reported this item lost.</p>
-      <input
-        placeholder="Your secret detail"
-        value={guess}
-        onChange={(e) => setGuess(e.target.value)}
-      />
-      <br /><br />
-      {error && <p style={{ color: 'red' }}>{error}</p>}
-      <button onClick={handleVerify}>Verify</button>
+    <div className="page">
+      <h2 className="page-title">Verify Ownership</h2>
+      <div className="card">
+        <p style={{ color: '#888', fontSize: '14px', marginBottom: '1rem' }}>
+          Enter the secret detail you provided when you reported this item lost.
+        </p>
+        <div className="form-group" style={{ marginBottom: '1rem' }}>
+          <label className="form-label">Secret detail</label>
+          <input
+            placeholder="Your secret detail"
+            value={guess}
+            onChange={(e) => setGuess(e.target.value)}
+          />
+        </div>
+        {error && <p className="error">{error}</p>}
+        <button className="primary" onClick={handleVerify}>Verify Ownership</button>
+      </div>
     </div>
   );
 }

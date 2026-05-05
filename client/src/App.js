@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import CreateLostItem from './pages/CreateLostItem';
 import CreateFoundItem from './pages/CreateFoundItem';
@@ -16,35 +16,35 @@ function App() {
       setUser(data.session?.user ?? null);
       setLoading(false);
     });
-
     supabase.auth.onAuthStateChange((_event, session) => {
       setUser(session?.user ?? null);
     });
   }, []);
 
-  if (loading) return <p style={{ color: '#fff', padding: '2rem' }}>Loading...</p>
+  if (loading) return <p style={{ color: '#fff', padding: '2rem' }}>Loading...</p>;
   if (!user) return <Login />;
-  
+
   return (
     <Router>
-      < nav className="nav">
+      <nav className="nav">
         <span className="nav-brand">Frostburg State Lost & Found Web Application</span>
-        <div className="nav-links>
-          <Link to="/">Report a Lost Item Around Campus:</Link>
-          <Link to="/found">Report a Found Item Around Campus:</Link>
-          <Link to="/matches">View Matched Items Around Campus:</Link>
+        <div className="nav-links">
+          <Link to="/">Report Lost Item</Link>
+          <Link to="/found">Report Found Item</Link>
+          <Link to="/matches">View Matches</Link>
         </div>
-        <button className="nav-logout" onClick={() => supabase.auth.signOut}>Log Out</button>
+        <button className="nav-logout" onClick={() => supabase.auth.signOut()}>Log Out</button>
       </nav>
-      </div>
+      <div>
         <Routes>
           <Route path="/" element={<CreateLostItem />} />
           <Route path="/found" element={<CreateFoundItem />} />
           <Route path="/matches" element={<ViewMatches />} />
-          <Route path="/verify/:lostItemId" element={<VerifyMatch />}
+          <Route path="/verify/:lostItemId" element={<VerifyMatch />} />
         </Routes>
       </div>
     </Router>
   );
 }
+
 export default App;

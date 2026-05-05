@@ -15,28 +15,40 @@ function ViewMatches() {
       setMatches(res.data);
       setSearched(true);
       setError(null);
-    } catch (err) {
+    } catch {
       setError('Could not find matches. Check your item ID.');
     }
   };
 
   return (
-    <div>
-      <h2>Find Matches:</h2>
-      <input
-        placeholder="Enter your lost item ID"
-        value={lostItemId}
-        onChange={(e) => setLostItemId(e.target.value)}
-      />
-      <button onClick={handleSearch}>Search</button>
-      {error && <p style={{ color: 'red' }}>{error}</p>}
-      {searched && matches.length === 0 && <p>No matches found yet.</p>}
+    <div className="page">
+      <h2 className="page-title">View Matches</h2>
+      <div className="card" style={{ marginBottom: '1.5rem' }}>
+        <div className="form-group">
+          <label className="form-label">Enter your lost item ID</label>
+          <input
+            placeholder="e.g. 123e4567-e89b..."
+            value={lostItemId}
+            onChange={(e) => setLostItemId(e.target.value)}
+          />
+        </div>
+        {error && <p className="error">{error}</p>}
+        <button className="primary" onClick={handleSearch}>Search for Matches</button>
+      </div>
+
+      {searched && matches.length === 0 && (
+        <p style={{ color: '#888', fontSize: '14px' }}>No matches found yet. Check back later.</p>
+      )}
+
       {matches.map((match) => (
-        <div key={match.found_item_id} style={{ border: '1px solid #ccc', padding: '1rem', margin: '1rem 0' }}>
-          <p>Item: {match.Items?.Item_Names?.name}</p>
-          <p>Color: {match.Items?.Colors?.color}</p>
-          <p>Location: {match.Items?.Locations?.location}</p>
-          <button onClick={() => navigate(`/verify/${lostItemId}`, { state: { found_item_id: match.found_item_id } })}>
+        <div key={match.found_item_id} className="match-card">
+          <p>Item: <span>{match.Items?.Item_Names?.name}</span></p>
+          <p>Color: <span>{match.Items?.Colors?.color}</span></p>
+          <p>Location: <span>{match.Items?.Locations?.location}</span></p>
+          <button
+            className="secondary"
+            style={{ marginTop: '0.75rem' }}
+            onClick={() => navigate(`/verify/${lostItemId}`, { state: { found_item_id: match.found_item_id } })}>
             This is mine — verify ownership
           </button>
         </div>

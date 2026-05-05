@@ -52,13 +52,71 @@ function CreateLostItem() {
 
   const handleSubmit = async () => {
     try {
-      const res = await axios.post(`${API}/lost-items`, form);
-      setSubmitted(res.data);
-      setError(null);
-    } catch {
-      setError('Something went wrong. Please try again!');
+     setError(null);
+
+     if (!form.name || !form.color || !form.location) {
+      setError('Please fill out every field.');
+      return;
     }
-  };
+
+    const { data: userData, error: userError } = await supabase.auth.getUser();
+
+    if (userError || !userData.user) {
+      setError('You must be logged in to create a post.');
+      return;
+    }
+    const user_id = userData.user.id;
+
+    const selectedName = options.names.find(n => n.name === form.name);
+    const selectedColor = options.colors.find(c => c.color === form.color);
+    const selectedLocation = options.locations.find(l => l.location === form.location);
+    if (!selectedName || !selectedColor || !selectedLocation) {
+      setError('Invalid dropdown selection.');
+      return;
+    }
+
+    const { data: item, error: itemError } = await supabase
+      .from('Items')
+      .insert([
+        {
+          user_id: user_id,
+          Item_Names_id: selectedName.Item_Names_id,
+          Colors_id: selectedColor.Colors_id,
+          Locations_id: selectedLocation.Locations_id
+        }
+      ])
+      .select()
+      .single();
+
+    if (itemError) {
+      console.error('Items insert error:', itemError);
+      setError(itemError.message);
+      return;
+    }
+
+    const { data: foundItem, error: foundError } = await supabase
+      .from('Found_Items')
+      .insert([
+        {
+          found_item_id: item.item_id,
+          status: 'unclaimed'
+        }
+      ])
+      .select()
+      .single();
+
+    if (foundError) {
+      console.error('Found item insert error:', foundError);
+      setError(foundError.message);
+      return;
+    }
+
+    setSubmitted(foundItem);
+  } catch (err) {
+    console.error('Submit found item crash:', err);
+    setError('Something went wrong. Please try again.');
+  }
+};
 
   if (submitted) {
     return (
@@ -68,7 +126,7 @@ function CreateLostItem() {
           <p style={{ color: '#ccc', marginBottom: '0.5rem' }}>Your item ID is:</p>
           <p style={{ fontSize: '20px', fontWeight: '500', color: '#c8102e', marginBottom: '1rem' }}>
             {submitted.lost_item_id}
-          </p>
+          </p>cha
           <p style={{ color: '#888', fontSize: '13px', marginBottom: '1.5rem' }}>
             Save this ID — you will need it to check for matches.
           </p>

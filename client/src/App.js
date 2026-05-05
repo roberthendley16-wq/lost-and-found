@@ -29,9 +29,9 @@ function App() {
       <nav className="nav">
         <span className="nav-brand">Frostburg State Lost & Found Web Application</span>
         <div className="nav-links">
-          <Link to="/">Report Lost Item</Link>
-          <Link to="/found">Report Found Item</Link>
-          <Link to="/matches">View Matches</Link>
+          <Link to="/">Report Lost Item Around Campus</Link>
+          <Link to="/found">Report Found Item Around Campus</Link>
+          <Link to="/matches">View Item Matches Around Campus</Link>
         </div>
         <button className="nav-logout" onClick={() => supabase.auth.signOut()}>Log Out</button>
       </nav>

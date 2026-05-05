@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { supabase } from '../supabaseClient';
 
 const API = 'https://lost-and-found-uffo.onrender.com';
 
@@ -10,9 +11,41 @@ function CreateFoundItem() {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    axios.get(`${API}/found-items/options`)
-      .then(res => setOptions(res.data))
-      .catch(() => setError('Could not load options'));
+    async function loadOptions() {
+      try {
+        const { data: names, error: namesError } = await supabase
+          .from('Item_Names')
+          .select('Item_Names_id, name')
+          .order('name');
+
+        const { data: colors, error: colorsError } = await supabase
+          .from('Colors')
+          .select('Colors_id, color')
+          .order('color');
+
+        const { data: locations, error: locationsError } = await supabase
+          .from('Locations')
+          .select('Locations_id, location')
+          .order('location');
+
+        if (namesError || colorsError || locationsError) {
+          console.error('Dropdown load error:', namesError || colorsError || locationsError);
+          setError('Could not load options');
+          return;
+        }
+
+        setOptions({
+          names: names || [],
+          colors: colors || [],
+          locations: locations || []
+        });
+      } catch (err) {
+        console.error('Dropdown crash:', err);
+        setError('Could not load options');
+      }
+    }
+
+    loadOptions();
   }, []);
 
   const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
@@ -32,7 +65,9 @@ function CreateFoundItem() {
       <div className="page">
         <div className="card">
           <h2 className="page-title">Item Reported!</h2>
-          <p style={{ color: '#ccc', marginBottom: '1rem' }}>Thank you for reporting this found item.</p>
+          <p style={{ color: '#ccc', marginBottom: '1rem' }}>
+            Thank you for reporting this found item.
+          </p>
           <button className="secondary" onClick={() => setSubmitted(null)}>Report Another</button>
         </div>
       </div>
@@ -46,26 +81,41 @@ function CreateFoundItem() {
         <div className="form-grid">
           <div className="form-group">
             <label className="form-label">Item type:</label>
-            <select name="name" onChange={handleChange} defaultValue="">
+            <select name="name" onChange={handleChange} value={form.name}>
               <option value="" disabled>Select item</option>
-              {options.names?.map(n => <option key={n.Item_Names_id} value={n.name}>{n.name}</option>)}
+              {options.names.map(n => (
+                <option key={n.Item_Names_id} value={n.name}>
+                  {n.name}
+                </option>
+              ))}
             </select>
           </div>
+
           <div className="form-group">
             <label className="form-label">Color:</label>
-            <select name="color" onChange={handleChange} defaultValue="">
+            <select name="color" onChange={handleChange} value={form.color}>
               <option value="" disabled>Select color</option>
-              {options.colors?.map(c => <option key={c.Colors_id} value={c.color}>{c.color}</option>)}
+              {options.colors.map(c => (
+                <option key={c.Colors_id} value={c.color}>
+                  {c.color}
+                </option>
+              ))}
             </select>
           </div>
+
           <div className="form-group full">
             <label className="form-label">Location:</label>
-            <select name="location" onChange={handleChange} defaultValue="">
+            <select name="location" onChange={handleChange} value={form.location}>
               <option value="" disabled>Select location</option>
-              {options.locations?.map(l => <option key={l.Locations_id} value={l.location}>{l.location}</option>)}
+              {options.locations.map(l => (
+                <option key={l.Locations_id} value={l.location}>
+                  {l.location}
+                </option>
+              ))}
             </select>
           </div>
         </div>
+
         {error && <p className="error">{error}</p>}
         <button className="primary" onClick={handleSubmit}>Submit Report</button>
       </div>

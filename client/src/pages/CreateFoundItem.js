@@ -45,21 +45,21 @@ function CreateFoundItem() {
       <div className="card">
         <div className="form-grid">
           <div className="form-group">
-            <label className="form-label">Item type</label>
+            <label className="form-label">Item type:</label>
             <select name="name" onChange={handleChange} defaultValue="">
               <option value="" disabled>Select item</option>
               {options.names?.map(n => <option key={n.Item_Names_id} value={n.name}>{n.name}</option>)}
             </select>
           </div>
           <div className="form-group">
-            <label className="form-label">Color</label>
+            <label className="form-label">Color:</label>
             <select name="color" onChange={handleChange} defaultValue="">
               <option value="" disabled>Select color</option>
               {options.colors?.map(c => <option key={c.Colors_id} value={c.color}>{c.color}</option>)}
             </select>
           </div>
           <div className="form-group full">
-            <label className="form-label">Location</label>
+            <label className="form-label">Location:</label>
             <select name="location" onChange={handleChange} defaultValue="">
               <option value="" disabled>Select location</option>
               {options.locations?.map(l => <option key={l.Locations_id} value={l.location}>{l.location}</option>)}

@@ -22,26 +22,30 @@ function App() {
     });
   }, []);
 
-  if (loading) return <p>Loading...</p>;
+  if (loading) return <p style={{ color: '#fff', padding: '2rem' }}>Loading...</p>
   if (!user) return <Login />;
   
   return (
     <Router>
-      <nav style={{ padding: '1rem', background: '#f0f0f0', marginBottom: '2rem' }}>
-        <Link to="/" style={{ marginRight: '1rem' }}>Report Lost Item</Link>
-        <Link to="/found" style={{ marginRight: '1rem' }}>Report Found Item</Link>
-        <Link to="/matches" style={{ marginRight: '1rem' }}>View Matches</Link>
+      < nav className="nav">
+        <span className="nav-brand">Frostburg State Lost & Found Web Application</span>
+        <div className="nav-links>
+          <Link to="/">Report a Lost Item Around Campus:</Link>
+          <Link to="/found">Report a Found Item Around Campus:</Link>
+          <Link to="/matches">View Matched Items Around Campus:</Link>
+        </div>
+        <button className="nav-logout" onClick={() => supabase.auth.signOut}>Log Out</button>
       </nav>
-      <div style={{ padding: '0 2rem' }}>
+      </div>
         <Routes>
           <Route path="/" element={<CreateLostItem />} />
           <Route path="/found" element={<CreateFoundItem />} />
           <Route path="/matches" element={<ViewMatches />} />
-          <Route path="/verify/:lostItemId" element={<VerifyMatch />} />
+          <Route path="/verify/:lostItemId" element={<VerifyMatch />}
         </Routes>
       </div>
     </Router>
   );
 }
-
-export default App;
+export default Login;
+  rt default App;

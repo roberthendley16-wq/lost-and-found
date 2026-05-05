@@ -1,12 +1,19 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
 import { supabase } from '../supabaseClient';
 
-const API = 'https://lost-and-found-uffo.onrender.com';
-
 function CreateFoundItem() {
-  const [options, setOptions] = useState({ names: [], colors: [], locations: [] });
-  const [form, setForm] = useState({ user_id: '', name: '', color: '', location: '' });
+  const [options, setOptions] = useState({
+    names: [],
+    colors: [],
+    locations: []
+  });
+
+  const [form, setForm] = useState({
+    name: '',
+    color: '',
+    location: ''
+  });
+
   const [submitted, setSubmitted] = useState(null);
   const [error, setError] = useState(null);
 
@@ -30,7 +37,7 @@ function CreateFoundItem() {
 
         if (namesError || colorsError || locationsError) {
           console.error('Dropdown load error:', namesError || colorsError || locationsError);
-          setError('Could not load options');
+          setError('Could not load dropdown options.');
           return;
         }
 
@@ -41,21 +48,86 @@ function CreateFoundItem() {
         });
       } catch (err) {
         console.error('Dropdown crash:', err);
-        setError('Could not load options');
+        setError('Could not load dropdown options.');
       }
     }
 
     loadOptions();
   }, []);
 
-  const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
+  const handleChange = (e) => {
+    setForm({
+      ...form,
+      [e.target.name]: e.target.value
+    });
+  };
 
   const handleSubmit = async () => {
     try {
-      const res = await axios.post(`${API}/found-items`, form);
-      setSubmitted(res.data);
       setError(null);
-    } catch {
+
+      if (!form.name || !form.color || !form.location) {
+        setError('Please fill out every field.');
+        return;
+      }
+
+      const { data: userData, error: userError } = await supabase.auth.getUser();
+
+      if (userError || !userData.user) {
+        setError('You must be logged in to create a found item post.');
+        return;
+      }
+
+      const user_id = userData.user.id;
+
+      const selectedName = options.names.find((item) => item.name === form.name);
+      const selectedColor = options.colors.find((color) => color.color === form.color);
+      const selectedLocation = options.locations.find((location) => location.location === form.location);
+
+      if (!selectedName || !selectedColor || !selectedLocation) {
+        setError('Invalid dropdown selection.');
+        return;
+      }
+
+      const { data: item, error: itemError } = await supabase
+        .from('Items')
+        .insert([
+          {
+            user_id: user_id,
+            Item_Names_id: selectedName.Item_Names_id,
+            Colors_id: selectedColor.Colors_id,
+            Locations_id: selectedLocation.Locations_id
+          }
+        ])
+        .select()
+        .single();
+
+      if (itemError) {
+        console.error('Items insert error:', itemError);
+        setError(itemError.message);
+        return;
+      }
+
+      const { data: foundItem, error: foundError } = await supabase
+        .from('Found_Items')
+        .insert([
+          {
+            found_item_id: item.item_id,
+            status: 'unclaimed'
+          }
+        ])
+        .select()
+        .single();
+
+      if (foundError) {
+        console.error('Found item insert error:', foundError);
+        setError(foundError.message);
+        return;
+      }
+
+      setSubmitted(foundItem);
+    } catch (err) {
+      console.error('Submit found item crash:', err);
       setError('Something went wrong. Please try again.');
     }
   };
@@ -65,10 +137,14 @@ function CreateFoundItem() {
       <div className="page">
         <div className="card">
           <h2 className="page-title">Item Reported!</h2>
+
           <p style={{ color: '#ccc', marginBottom: '1rem' }}>
             Thank you for reporting this found item.
           </p>
-          <button className="secondary" onClick={() => setSubmitted(null)}>Report Another</button>
+
+          <button className="secondary" onClick={() => setSubmitted(null)}>
+            Report Another
+          </button>
         </div>
       </div>
     );
@@ -77,15 +153,18 @@ function CreateFoundItem() {
   return (
     <div className="page">
       <h2 className="page-title">Report a Found Item:</h2>
+
       <div className="card">
         <div className="form-grid">
           <div className="form-group">
-            <label className="form-label">Item type:</label>
-            <select name="name" onChange={handleChange} value={form.name}>
-              <option value="" disabled>Select item</option>
-              {options.names.map(n => (
-                <option key={n.Item_Names_id} value={n.name}>
-                  {n.name}
+            <label className="form-label">Item Type:</label>
+            <select name="name" value={form.name} onChange={handleChange}>
+              <option value="" disabled>
+                Select item
+              </option>
+              {options.names.map((item) => (
+                <option key={item.Item_Names_id} value={item.name}>
+                  {item.name}
                 </option>
               ))}
             </select>
@@ -93,11 +172,13 @@ function CreateFoundItem() {
 
           <div className="form-group">
             <label className="form-label">Color:</label>
-            <select name="color" onChange={handleChange} value={form.color}>
-              <option value="" disabled>Select color</option>
-              {options.colors.map(c => (
-                <option key={c.Colors_id} value={c.color}>
-                  {c.color}
+            <select name="color" value={form.color} onChange={handleChange}>
+              <option value="" disabled>
+                Select color
+              </option>
+              {options.colors.map((color) => (
+                <option key={color.Colors_id} value={color.color}>
+                  {color.color}
                 </option>
               ))}
             </select>
@@ -105,11 +186,13 @@ function CreateFoundItem() {
 
           <div className="form-group full">
             <label className="form-label">Location:</label>
-            <select name="location" onChange={handleChange} value={form.location}>
-              <option value="" disabled>Select location</option>
-              {options.locations.map(l => (
-                <option key={l.Locations_id} value={l.location}>
-                  {l.location}
+            <select name="location" value={form.location} onChange={handleChange}>
+              <option value="" disabled>
+                Select location
+              </option>
+              {options.locations.map((location) => (
+                <option key={location.Locations_id} value={location.location}>
+                  {location.location}
                 </option>
               ))}
             </select>
@@ -117,7 +200,10 @@ function CreateFoundItem() {
         </div>
 
         {error && <p className="error">{error}</p>}
-        <button className="primary" onClick={handleSubmit}>Submit Report</button>
+
+        <button className="primary" onClick={handleSubmit}>
+          Submit Report
+        </button>
       </div>
     </div>
   );

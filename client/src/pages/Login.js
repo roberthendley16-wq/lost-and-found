@@ -32,11 +32,11 @@ function Login() {
         </div>
         <div className="card">
           <div className="form-group" style={{ marginBottom: '1rem' }}>
-            <label className="form-label">Email address</label>
+            <label className="form-label">Email address:</label>
             <input type="email" placeholder="you@frostburg.edu" value={email} onChange={e => setEmail(e.target.value)} />
           </div>
           <div className="form-group" style={{ marginBottom: '1rem' }}>
-            <label className="form-label">Password</label>
+            <label className="form-label">Password:</label>
             <input type="password" placeholder="••••••••" value={password} onChange={e => setPassword(e.target.value)} />
           </div>
           {error && <p className="error">{error}</p>}
